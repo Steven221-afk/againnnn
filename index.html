@@ -5,37 +5,76 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign-Up Page</title>
   <style>
-    /* Reset and basic styles */
-    body {
+    /* Global Reset and Background Styling */
+    * {
       margin: 0;
-      font-family: 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #141e30, #243b55);
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      color: #fff;
       overflow: hidden;
     }
 
+    /* Animated Background Effect */
+    body::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent 70%);
+      animation: rotate 10s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes rotate {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Container Styling */
     .signup-container {
-      background: rgba(255, 255, 255, 0.9);
-      color: #333;
-      padding: 30px 20px;
-      border-radius: 12px;
-      width: 350px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 20px;
+      padding: 30px;
+      width: 400px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       text-align: center;
-      animation: fadeIn 1s ease-in-out;
+      backdrop-filter: blur(10px);
+      animation: fadeInUp 1s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .signup-container h1 {
-      margin-bottom: 15px;
-      font-size: 28px;
-      color: #2575fc;
-      font-weight: bold;
+      font-size: 2.5rem;
+      color: #fff;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
+    /* Form Input Styling */
     .form-group {
       margin-bottom: 20px;
     }
@@ -44,72 +83,66 @@
       display: block;
       margin-bottom: 5px;
       font-weight: bold;
+      color: #fff;
     }
 
     input {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 16px;
-      transition: 0.3s;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      outline: none;
+      transition: all 0.3s;
     }
 
     input:focus {
-      outline: none;
-      border-color: #2575fc;
-      box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
+      background: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
     }
 
     button {
       width: 100%;
-      background-color: #2575fc;
-      color: #fff;
+      background: linear-gradient(90deg, #ff8a00, #e52e71);
       padding: 12px;
       border: none;
-      border-radius: 6px;
-      font-size: 16px;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      color: #fff;
+      text-transform: uppercase;
       cursor: pointer;
-      transition: background-color 0.3s, transform 0.2s;
+      transition: all 0.3s;
     }
 
     button:hover {
-      background-color: #1a61d1;
-      transform: scale(1.02);
-    }
-
-    #successBox {
-      display: none;
-      background-color: #4caf50;
-      color: white;
-      padding: 15px;
-      margin-top: 20px;
-      border-radius: 6px;
-      animation: slideDown 0.5s ease-out;
+      background: linear-gradient(90deg, #e52e71, #ff8a00);
+      transform: scale(1.05);
     }
 
     #message {
       margin-top: 15px;
-      font-size: 14px;
+      font-size: 1rem;
       color: red;
     }
 
-    /* Keyframes for animations */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.9);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+    #successBox {
+      display: none;
+      background: rgba(40, 167, 69, 0.8);
+      color: #fff;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      text-align: center;
+      animation: slideDown 0.5s ease;
     }
 
     @keyframes slideDown {
       from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(-20px);
       }
       to {
         opacity: 1;
@@ -118,11 +151,11 @@
     }
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js"></script>
 </head>
 <body>
   <div class="signup-container">
-    <h1>Create Account</h1>
+    <h1>Sign Up</h1>
     <form id="signupForm">
       <div class="form-group">
         <label for="name">Name:</label>
@@ -136,59 +169,57 @@
         <label for="password">Password:</label>
         <input type="password" id="password" required>
       </div>
-      <button type="submit">Sign Up</button>
+      <button type="submit">Create Account</button>
     </form>
     <p id="message"></p>
-    <div id="successBox">
-      🎉 Your account has been successfully created!
-    </div>
+    <div id="successBox">🎉 Your account has been successfully created!</div>
   </div>
 
   <script>
     // Firebase configuration
     const firebaseConfig = {
-  apiKey: "AIzaSyBLqQhAtNuO632Xd3-e5Fe3oYDKLJGT8K0",
-  authDomain: "gay-ass-nigga.firebaseapp.com",
-  databaseURL: "https://gay-ass-nigga-default-rtdb.firebaseio.com",
-  projectId: "gay-ass-nigga",
-  storageBucket: "gay-ass-nigga.firebasestorage.app",
-  messagingSenderId: "740449529935",
-  appId: "1:740449529935:web:ab2538ff3bdad3fbc8fa3a"
+  apiKey: "AIzaSyAsz1oCCnC6cfGuz-BgypNU5vfGyhNmORw",
+  authDomain: "tmx-27db6.firebaseapp.com",
+  projectId: "tmx-27db6",
+  storageBucket: "tmx-27db6.firebasestorage.app",
+  messagingSenderId: "1039087524135",
+  appId: "1:1039087524135:web:91792eb81974c186c43102",
+  measurementId: "G-88W0C2WRJB"
 };
+
     // Initialize Firebase
     const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    const db = firebase.firestore();
 
     // Handle form submission
-    document.getElementById('signupForm').addEventListener('submit', (e) => {
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const name = document.getElementById('name').value;
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      // Create a new user
-      auth.createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          // Successfully created user
-          const user = userCredential.user;
-
-          // Hide the form and display the success box
-          document.getElementById('signupForm').style.display = 'none';
-          const successBox = document.getElementById('successBox');
-          successBox.style.display = 'block';
-          successBox.textContent = `🎉 Welcome, ${name}! Your account has been created.`;
-
-          console.log(`User created:`, { uid: user.uid, name, email });
-        })
-        .catch((error) => {
-          // Handle errors
-          const message = document.getElementById('message');
-          message.textContent = error.message;
-          message.style.color = 'red';
-          console.error('Error:', error);
+      try {
+        // Save user info in Firestore
+        await db.collection('users').doc(email).set({
+          name: name,
+          email: email,
+          password: password // Plaintext password stored
         });
+
+        // Hide the form and display the success box
+        document.getElementById('signupForm').style.display = 'none';
+        const successBox = document.getElementById('successBox');
+        successBox.style.display = 'block';
+        successBox.textContent = `🎉 Welcome, ${name}! Your account has been created.`;
+
+        console.log(`User created:`, { name, email, password });
+      } catch (error) {
+        const message = document.getElementById('message');
+        message.textContent = error.message;
+        console.error('Error:', error);
+      }
     });
   </script>
 </body>
-</html>
+  </html>
